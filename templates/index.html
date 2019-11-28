@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TMS</title>
+
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='bootstrap.min.css') }}"/>
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}"/>
+</head>
+
+<body>
+  <!--Navigation bar-->
+  <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/">TMS<span>-TCS</span></a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/#features">Features</a></li>
+		      <li><a href="/register">Register</a></li>
+          <li class="btn-emph"><a href="/sign-in">Sign In</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!--/ Navigation bar-->
+
+  <!--Banner-->
+  <div class="banner">
+    <div class="bg-color">
+      <div class="container">
+        <div class="row">
+          <div class="banner-text text-center">
+            <div class="text-border">
+              <h2 class="text-dec">A Team Management System that works</h2>
+            </div>
+            <div class="intro-para text-center">
+              <p class="big-text">Register as a student or instructor</p>
+              <p class="small-text">Seamlessly create, join & manage teams for your courses.</p>
+              
+              <a href="/register"><button type="button" class="btn btn-blue btn-flat">Register</button></a>
+              <a href="/sign-in"><button type="button" class="btn btn-blue btn-flat">Sign In</button></a>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--/ Banner-->
+
+  <!--Features-->
+  <section id="features" class="section-padding">
+    <div class="container">
+      <div class="row">
+        <div class="header-section text-center">
+          <h2>Features</h2>
+          <p>The Team Management System is built with the intent of allowing students to create, choose & manage their own teams.<br>Collaboration has never been easier!</p>
+          <hr class="bottom-line">
+        </div>
+        <div class="feature-info">
+          <div class="fea">
+            <div class="col-md-6">
+              <div class="heading pull-right">
+                <h4>Team Creation System</h4>
+                <p>Allows the creation of teams based on parameters determined by instructor</p>
+              </div>
+              <div class="fea-img pull-left">
+                <i class="fa fa-css3"></i>
+              </div>
+            </div>
+          </div>
+          <div class="fea">
+            <div class="col-md-6">
+              <div class="heading pull-right">
+                <h4>Team Work Collaboration System</h4>
+                <p>Allows for convenient communication between team members</p>
+              </div>
+              <div class="fea-img pull-left">
+                <i class="fa fa-drupal"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!--/ feature-->
+  <!--Footer-->
+  <footer id="footer" class="footer  col-xs-12">
+    <div class="container text-center">
+      ©2016 StarTech. All rights reserved
+    </div>
+  </footer>
+  <!--/ Footer-->
+
+</body>
+
+</html>
