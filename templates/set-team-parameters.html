@@ -37,7 +37,7 @@
 
       <div>
         <div>
-          <h4 class="text-center">Sign In</h4>
+          <h4 class="text-center">Setup for Team Parameters</h4>
         </div>
 
       <div>
@@ -45,25 +45,20 @@
           <div class="col-sm-3"></div>
 
           <div class="login-body col-sm-6 text-center">
-            <p class="login-msg">Sign in to begin your session</p>
+            <p class="login-msg">Set up team parameters to allow team creation</p>
             <div class="form-group">
               <form name="" id="">
                 <div class="form-group has-feedback">
-                  <!----- username -------------->
-                  <input class="form-control" placeholder="Username" id="" type="text"/>
+                  <!----- min team size -------------->
+                  Minimum team size: <input class="form-control" placeholder="min_size" id="" type="number" min="1"/>
                 </div>
                 <div class="form-group has-feedback">
-                  <!----- password -------------->
-                  <input class="form-control" placeholder="Password" id="" type="password"/>
+                  <!----- max team size -------------->
+                  Maximum team size: <input class="form-control" placeholder="max_size" id="" type="number" min="1"/>
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <div class="checkbox icheck">
-                      <label><input type="checkbox"> Remember Me</label>
-                    </div>
-                  </div>
-                  <div class="col-xs-12">
-                    <button type="button" class="btn btn-blue btn-block btn-flat">Sign In</button>
+                    <button type="button" class="btn btn-blue btn-block btn-flat">Set Parameters</button>
                   </div>
                 </div>
               </form>
