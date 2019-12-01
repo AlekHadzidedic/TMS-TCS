@@ -14,7 +14,9 @@ app.secret_key = os.urandom(24)
 user = User('test', 'er', 'ere@ere.com')
 user.user_type = 'Instructor'
 teams = []
-g.are_team_parameters_set = False
+    
+with app.app_context():
+    g.are_team_parameters_set = False
 
 @app.route('/')
 def index():
@@ -36,28 +38,29 @@ def register():
 def create_team():
     if request.method == 'POST':
       
-        try:
-            teamname = request.form['teamname']
-				
-			 
-            db = DatabaseConnection()
+            try:
+                team_name = request.form['team_name']
+                    
+                
+                db = DatabaseConnection()
 
-            with db.get_connection() as con:
+                with db.get_connection() as con:
 
-                cursor = con.cursor()
-                cursor.execute("INSERT INTO tms.team(team_name) VALUES (%s)",(teamname,))
+                    cursor = con.cursor()
+                    cursor.execute("INSERT INTO tms.team(team_name) VALUES (%s)",(team_name,))
 
-                flash("Successfully created team")
-	  
-        except:
-            con.rollback()
-            #return f"{err.__class__.__name__}: {err}"
-            flash("Error in creating team")
-			
-        finally:
-            con.close()
-            return render_template("create-team.html")
-          
+                    flash("Successfully created team")
+        
+            except:
+                con.rollback()
+                return f"{err.__class__.__name__}: {err}"
+                #flash("Error in creating team")
+                
+            finally:
+                con.close()
+                return render_template("create-team.html")
+       
+
     return render_template("create-team.html")
 
 
@@ -96,4 +99,5 @@ def team_parameters():
 
 
 if __name__ == '__main__':
+    app.debug = True
     app.run()
