@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TMS</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
+</head>
+
+<body>
+<!--Navigation bar-->
+<nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">TMS<span>-TCS</span></a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/#features">Features</a></li>
+                <li><a href="/register">Register</a></li>
+                <li class="btn-emph"><a href="/sign-in">Sign In</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--/ Navigation bar-->
+
+<!--Banner-->
+<div class="banner">
+    <div class="bg-color">
+        <div class="container">
+            <div class="row">
+                <div class="banner-text text-center">
+                    <div class="intro-para text-center">
+                        <br>
+                        <br>
+                        <br>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class=flashes>
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
+                        {% if user.user_type == 'Instructor' %}
+                            <a href="/team/parameters">
+                                <button type="button" class="btn btn-blue btn-flat">Set Team Parameters</button>
+                            </a>
+                            <a href="/team/visualize">
+                                <button type="button" class="btn btn-blue btn-flat">Visualize Teams</button>
+                            </a>
+                        {% else %}
+                            <a href="/team/parameters">
+                                <button type="button" class="btn btn-blue btn-flat">Join Team</button>
+                            </a>
+                            {% if user.user_type == 'Liaison' %}
+                                <a href="/team/parameters">
+                                    <button type="button" class="btn btn-blue btn-flat">Add Team Member</button>
+                                </a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ Banner-->
+
+<!--Footer-->
+<footer id="footer" class="footer  col-xs-12">
+    <div class="container text-center">
+        ©2016 StarTech. All rights reserved
+    </div>
+</footer>
+<!--/ Footer-->
+
+</body>
+
+</html>
