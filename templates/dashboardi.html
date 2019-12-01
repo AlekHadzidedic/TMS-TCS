@@ -24,9 +24,13 @@
       </div>
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
-        {% if g.user %}
+        {% if g.user_type == "student" %}
           <li><a href="/create-team">Create Team</a></li>
           <li><a href="/create-team">Join Team</a></li>
+          <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
+        {% elif g.user_type == "instructor" %}
+          <li><a href="/team/parameters">Set Team Parameters</a></li>
+          <li><a href="/team/visualize">Visualize Teams</a></li>
           <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
         {% else %}
           <li><a href="/#features">Features</a></li>
@@ -60,7 +64,7 @@
           <div class="col-sm-3"></div>
 
           <div class="login-body col-sm-6 text-center">
-            <p class="login-msg">Welcome {{g.user}}</p>
+            <p class="login-msg">Welcome {{g.user_first_name}}</p>
 
               <div class="row">
                 <div class="col-xs-12">
