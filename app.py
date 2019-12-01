@@ -33,35 +33,23 @@ def sign_in():
                 cursor.execute("SELECT * FROM tms.student WHERE tms.student.email = (%s)",(email,))
                 dbEmailResultStudent = cursor.fetchone()
 
-                print("TYPE OF OBJECT: " + str(type(dbEmailResultStudent)))
-                print ("STUDENT DATA (NOT LOGGED YET): " + str(dbEmailResultStudent)) # STUDENT'S DATA
-
                 if (dbEmailResultStudent != None): # Student with email found
                     
-                    print("THIS SHOULDNT PRINT")
                     dbHashedPass = dbEmailResultStudent[5]
 
                     userType = "student"
 
-                    print ("HASHED STUDENT PASS (NOT LOGGED YET): " + str(dbHashedPass)) # THE HASHED PASSWORD FROM DB FOR THAT USER
-
                 else: # Check if instructor
 
-                    print("THIS SHOULD PRINT")
                     cursor = con.cursor()
                     cursor.execute("SELECT * FROM tms.instructor WHERE tms.instructor.email = (%s)",(email,))
                     dbEmailResultInstructor = cursor.fetchone()
 
                     if (dbEmailResultInstructor != None): # instructor with email found
-                        print("THIS SHOULD ALSO PRINT")
     
                         dbHashedPass = dbEmailResultInstructor[4]
-                        
-                        print("THIS MUST ALSO PRINT")
 
                         userType = "instructor"
-
-                        print ("HASHED INSTRUCTOR PASS (NOT LOGGED YET): " + str(dbHashedPass))
 
                     else:
                         flash("No user with such email exists.")
@@ -134,8 +122,8 @@ def before_request():
         g.student_is_liaison = session['isLiaison']
         g.student_team_name = session["teamName"]
 
-    potato = ("EMAIL: " + str(g.user), "USER TYPE: " + str(g.user_type), "FIRSTNAME: " + str(g.user_first_name), "LAST NAME: " + str(g.user_last_name), "STUDENT NUM: " + str(g.student_number), "IS_LIAISON: " + str(g.student_is_liaison), "TEAM NAME: " + str(g.student_team_name))
-    print("LOGGED IN: " + str(potato))
+    userVals = ("EMAIL: " + str(g.user), "USER TYPE: " + str(g.user_type), "FIRSTNAME: " + str(g.user_first_name), "LAST NAME: " + str(g.user_last_name), "STUDENT NUM: " + str(g.student_number), "IS_LIAISON: " + str(g.student_is_liaison), "TEAM NAME: " + str(g.student_team_name))
+    print("VALUES: " + str(userVals))
 
 @app.route('/getsession')
 def getsession():
@@ -155,6 +143,14 @@ def register():
     if request.method == 'POST':
         session.pop('user', None) # clear session
         
+        if (request.form['password'] != request.form['confirm_password']):
+            flash("Passwords don't match.")
+            return redirect(url_for("register"))
+
+        if (request.form['email'] != request.form['confirm_email']):
+            flash("Emails don't match.")
+            return redirect(url_for("register"))
+
         try:
             firstname = request.form['first_name']
             lastname = request.form['last_name']
@@ -171,15 +167,37 @@ def register():
                 cursor = con.cursor()
                 
                 if (userType == "student"): #if it's a student
+
+                    cursor.execute("SELECT * FROM tms.student WHERE tms.student.email = (%s)",(email,))
+                    dbEmailResult = cursor.fetchone()
+
+                    if (dbEmailResult == None):
                     
-                    studentNumber = request.form['student_number']
+                        studentNumber = request.form['student_number']
+                        
+                        cursor = con.cursor()
+                        cursor.execute("INSERT INTO tms.student (first_name, last_name, student_number, email, password, team_name) VALUES (%s, %s, %s, %s, %s, NULL)",(firstname, lastname, studentNumber, email, hashedPass))
+                
+                        flash("Successfully registered user")
 
-                    cursor.execute("INSERT INTO tms.student (first_name, last_name, student_number, email, password, team_name) VALUES (%s, %s, %s, %s, %s, NULL)",(firstname, lastname, studentNumber, email, hashedPass))
+                    else:
+                        flash("User with that email already exists.")
+
                 else: #it's an instructor
-                    cursor.execute("INSERT INTO tms.instructor (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)",(firstname, lastname, email, hashedPass))
 
-                flash("Successfully registered user")
-  
+                    cursor.execute("SELECT * FROM tms.instructor WHERE tms.instructor.email = (%s)",(email,))
+                    dbEmailResult = cursor.fetchone()
+
+                    if (dbEmailResult == None):
+
+                        cursor = con.cursor()
+                        cursor.execute("INSERT INTO tms.instructor (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)",(firstname, lastname, email, hashedPass))
+                        
+                        flash("Successfully registered user")
+                    
+                    else:
+                        flash("User with that email already exists.")
+                
         except Exception as err:
             con.rollback()
             return f"{err.__class__.__name__}: {err}"

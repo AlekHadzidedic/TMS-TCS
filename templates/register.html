@@ -9,9 +9,11 @@
 
     $("#studentId").click(function(){
       $("#studentNumberDiv").show();
+      $("#studentNumInput").attr("required", true)
     })
     $("#instructorId").click(function(){
       $("#studentNumberDiv").hide();
+      $("#studentNumInput").attr("required", false)
     })
 
   });
@@ -82,32 +84,32 @@
               <form method="POST" id="registerForm">
                 <div class="form-group has-feedback">
                     <!----- First Name ------->
-                    <input class="form-control" placeholder="First Name" id="" type="text" name="first_name"/>
+                    <input class="form-control" placeholder="First Name" id="" type="text" name="first_name" required/>
                 </div>
 
                 <div class="form-group has-feedback">
                   <!----- Last Name ------->
-                  <input class="form-control" placeholder="Last Name" id="" type="text" name="last_name"/>
+                  <input class="form-control" placeholder="Last Name" id="" type="text" name="last_name" required/>
                 </div>
 
                 <div class="form-group has-feedback">
                   <!----- Email ------->
-                  <input class="form-control" placeholder="Email Address" id="" type="email" name="email"/>
+                  <input class="form-control" placeholder="Email Address" id="" type="email" name="email" required/>
                 </div>
 
                 <div class="form-group has-feedback">
                     <!----- Confirm Email ------->
-                    <input class="form-control" placeholder="Confirm Email Address" id="" type="email"/>
+                    <input class="form-control" placeholder="Confirm Email Address" id="" type="email" name="confirm_email" required/>
                 </div>
   
                 <div class="form-group has-feedback">
                   <!----- Password ------->
-                  <input class="form-control" placeholder="Password" id="" type="password" name="password"/>
+                  <input class="form-control" placeholder="Password" id="" type="password" name="password" required/>
                 </div>
 
                 <div class="form-group has-feedback">
                     <!----- Confirm password ------->
-                    <input class="form-control" placeholder="Confirm Password" id="" type="password"/>
+                    <input class="form-control" placeholder="Confirm Password" id="" type="password" name="confirm_password" required/>
                 </div>
 
                 <p>I am a:&nbsp;&nbsp;
@@ -117,7 +119,7 @@
 
                 <div class="form-group has-feedback" id="studentNumberDiv">
                     <!----- Student Number If Student ------->
-                    <input class="form-control" placeholder="Student Number" type="text" name="student_number"/>
+                    <input class="form-control" placeholder="Student Number" type="text" name="student_number" id="studentNumInput" required/>
                 </div>
 
                 <div class="row">
