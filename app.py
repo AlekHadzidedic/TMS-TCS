@@ -11,7 +11,6 @@ app.secret_key = os.urandom(24)
 
 user = User('test', 'er', 'ere@ere.com')
 user.user_type = 'Instructor'
-teams = []
 
 with app.app_context():
     db = DatabaseConnection()
@@ -24,6 +23,7 @@ with app.app_context():
     db.get_connection().close()
 
     print(g.are_team_parameters_set)
+
 
 @app.route('/')
 def index():
@@ -73,9 +73,27 @@ def user_options():
     return render_template("user-options.html", user=user)
 
 
-@app.route('/team')
-def team_options():
-    return render_template("create-team.html")
+@app.route('/team/visualize')
+def team_visualize():
+    teams = []
+    teams_sql = []
+
+    db = DatabaseConnection()
+
+    with db.get_connection().cursor() as cursor:
+        cursor.execute("SELECT * FROM tms.team")
+        teams_sql = cursor.fetchall()
+    db.get_connection().close()
+
+    for team_sql in teams_sql:
+        team = Team(team_sql[1])
+        team.team_number = team_sql[0]
+        team.set_max_team_size(team_sql[2])
+        team.set_min_team_size(team_sql[3])
+        team.num_team_members = team_sql[4]
+        teams.append(team)
+
+    return render_template("visualize-teams.html", teams=teams)
 
 
 @app.route('/team/parameters', methods=['POST', 'GET'])
