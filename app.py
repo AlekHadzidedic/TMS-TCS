@@ -193,7 +193,7 @@ def register():
                         studentNumber = request.form['student_number']
                         
                         cursor = con.cursor()
-                        cursor.execute("INSERT INTO tms.student (first_name, last_name, student_number, email, password, team_name) VALUES (%s, %s, %s, %s, %s, NULL)",(firstname, lastname, studentNumber, email, hashedPass))
+                        cursor.execute("INSERT INTO tms.student (first_name, last_name, student_number, email, password, is_liason, team_name) VALUES (%s, %s, %s, %s, %s, %s, NULL)",(firstname, lastname, studentNumber, email, hashedPass, False))
                 
                         flash("Successfully registered user")
 
@@ -233,7 +233,7 @@ def register():
 @app.route('/dashboard')
 def dashboard():
     if g.user: ###### NEED TO CHECK USER TYPE --> REDIRECT TO STUDENT ONE FOR STUDENT, INSTR FOR INSTR ****** 
-
+    
         # SO FAR JUST INSTRUCTOR REDIRECT
         return render_template("dashboardi.html")
 
@@ -268,30 +268,36 @@ def create_team():
 
 @app.route('/user/options')
 def user_options():
-    return render_template("user-options.html", user=user)
+    if g.user_type == "instructor":
+        return render_template("user-options.html", user=user)
+    return redirect(url_for("dashboard"))
 
 
 @app.route('/team/visualize')
 def team_visualize():
-    teams = []
-    teams_sql = []
 
-    db = DatabaseConnection()
+    if g.user_type == "instructor":
+        teams = []
+        teams_sql = []
 
-    with db.get_connection().cursor() as cursor:
-        cursor.execute("SELECT * FROM tms.team")
-        teams_sql = cursor.fetchall()
-    db.get_connection().close()
+        db = DatabaseConnection()
 
-    for team_sql in teams_sql:
-        team = Team(team_sql[1])
-        team.team_number = team_sql[0]
-        team.set_max_team_size(team_sql[2])
-        team.set_min_team_size(team_sql[3])
-        team.num_team_members = team_sql[4]
-        teams.append(team)
+        with db.get_connection().cursor() as cursor:
+            cursor.execute("SELECT * FROM tms.team")
+            teams_sql = cursor.fetchall()
+        db.get_connection().close()
 
-    return render_template("visualize-teams.html", teams=teams)
+        for team_sql in teams_sql:
+            team = Team(team_sql[1])
+            team.team_number = team_sql[0]
+            team.set_max_team_size(team_sql[2])
+            team.set_min_team_size(team_sql[3])
+            team.num_team_members = team_sql[4]
+            teams.append(team)
+
+        return render_template("visualize-teams.html", teams=teams)
+
+    return redirect(url_for("dashboard"))
 
 
 @app.route('/team/parameters', methods=['POST', 'GET'])
@@ -320,10 +326,10 @@ def team_parameters():
         g.are_team_parameters_set = True
         return redirect(url_for("user_options"))
     else:
-        if user.user_type == 'Instructor':
+        if g.user_type == 'instructor':
             return render_template("set-team-parameters.html")
         else:
-            return render_template("index.html")
+            return redirect(url_for("dashboard"))
 
 
 if __name__ == '__main__':
