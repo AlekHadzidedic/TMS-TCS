@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS tms.instructor (
   first_name        VARCHAR (20) NOT NULL,
   last_name         VARCHAR (50) NOT NULL,
   email             VARCHAR (50) NOT NULL UNIQUE,
-  password          TEXT
+  password          VARCHAR (255)
 );
 
 CREATE TABLE IF NOT EXISTS tms.team (
@@ -21,10 +21,17 @@ CREATE TABLE IF NOT EXISTS tms.student (
   id                SERIAL PRIMARY KEY,
   first_name        VARCHAR (20) NOT NULL,
   last_name         VARCHAR (50) NOT NULL,
-  student_number    INTEGER,
+  student_number    INTEGER NOT NULL UNIQUE,
   email             VARCHAR (50) NOT NULL UNIQUE,
-  password          TEXT,
-  is_liason         boolean,
-  team_name VARCHAR(50) REFERENCES tms.team (team_name) ON DELETE RESTRICT
+  password          VARCHAR (255),
+  is_liason         BOOLEAN,
+  team_name VARCHAR (50) REFERENCES tms.team (team_name) ON DELETE RESTRICT
+
 );
 
+CREATE TABLE IF NOT EXISTS tms.team_parameters (
+  id                    SERIAL PRIMARY KEY,
+  max_team_size         INTEGER,
+  min_team_size         INTEGER,
+  are_parameters_set    BOOLEAN
+);

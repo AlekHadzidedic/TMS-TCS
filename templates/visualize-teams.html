@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TMS</title>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
+</head>
+
+<body>
+    <!--Navigation bar-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">TMS<span>-TCS</span></a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav navbar-right">
+            {% if g.user_type == "student" %}
+              <li><a href="/create-team">Create Team</a></li>
+              <li><a href="/create-team">Join Team</a></li>
+              <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
+            {% elif g.user_type == "instructor" %}
+              <li><a href="/team/parameters">Set Team Parameters</a></li>
+              <li><a href="/team/visualize">Visualize Teams</a></li>
+              <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
+            {% else %}
+              <li><a href="/#features">Features</a></li>
+              <li><a href="/register">Register</a></li>
+              <li class="btn-emph"><a href="/sign-in">Sign In</a></li>
+            {% endif %}
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <!--/ Navigation bar-->
+
+<div style="margin-top:100px;">
+
+    <div>
+        <div>
+            <h4 class="text-center">Visualize Teams</h4>
+        </div>
+
+        <div>
+
+            <div class="col-sm-3"></div>
+
+            <div class="login-body col-sm-6 text-center">
+                {% for team in teams %}
+                    <p>Team Number: {{ team.team_number }}</p>
+                    <p>Team Name: {{ team.name }}</p>
+                    <p>Team Size: {{ team.num_team_members }}</p>
+                    <br>
+                    <br>
+                {% endfor %}
+            </div>
+
+            <div class="col-sm-3"></div>
+
+        </div>
+    </div>
+
+</div>
+<!--Footer-->
+<footer id="footer" class="footer col-xs-12">
+    <div class="container text-center">
+        ©2016 StarTech. All rights reserved
+    </div>
+</footer>
+<!--/ Footer-->
+
+</body>
+
+</html>

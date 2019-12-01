@@ -24,9 +24,19 @@
       </div>
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
+        {% if g.user_type == "student" %}
+          <li><a href="/create-team">Create Team</a></li>
+          <li><a href="/create-team">Join Team</a></li>
+          <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
+        {% elif g.user_type == "instructor" %}
+          <li><a href="/team/parameters">Set Team Parameters</a></li>
+          <li><a href="/team/visualize">Visualize Teams</a></li>
+          <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
+        {% else %}
           <li><a href="/#features">Features</a></li>
-		  <li><a href="/register">Register</a></li>
+          <li><a href="/register">Register</a></li>
           <li class="btn-emph"><a href="/sign-in">Sign In</a></li>
+        {% endif %}
         </ul>
       </div>
     </div>
@@ -37,6 +47,15 @@
   
       <div>
         <div>
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-success text-center" role="alert">
+                    {{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
           <h4 class="text-center">Sign In</h4>
         </div>
 
@@ -45,25 +64,21 @@
           <div class="col-sm-3"></div>
 
           <div class="login-body col-sm-6 text-center">
+            
             <p class="login-msg">Sign in to begin your session</p>
             <div class="form-group">
-              <form name="" id="">
+              <form method="POST" id="">
                 <div class="form-group has-feedback">
                   <!----- username -------------->
-                  <input class="form-control" placeholder="Username" id="" type="text"/>
+                  <input class="form-control" placeholder="Email" id="" type="email" name="email" required/>
                 </div>
                 <div class="form-group has-feedback">
                   <!----- password -------------->
-                  <input class="form-control" placeholder="Password" id="" type="password"/>
+                  <input class="form-control" placeholder="Password" id="" type="password" name="password" required/>
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <div class="checkbox icheck">
-                      <label><input type="checkbox"> Remember Me</label>
-                    </div>
-                  </div>
-                  <div class="col-xs-12">
-                    <button type="button" class="btn btn-blue btn-block btn-flat">Sign In</button>
+                    <button type="submit" class="btn btn-blue btn-block btn-flat">Sign In</button>
                   </div>
                 </div>
               </form>
