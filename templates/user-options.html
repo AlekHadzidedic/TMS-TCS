@@ -40,12 +40,24 @@
             <div class="row">
                 <div class="banner-text text-center">
                     <div class="intro-para text-center">
-                    <br>
-                    <br>
-                    <br>
+                        <br>
+                        <br>
+                        <br>
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <ul class=flashes>
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        {% endwith %}
                         {% if user.user_type == 'Instructor' %}
                             <a href="/team/parameters">
                                 <button type="button" class="btn btn-blue btn-flat">Set Team Parameters</button>
+                            </a>
+                            <a href="/team/visualize">
+                                <button type="button" class="btn btn-blue btn-flat">Visualize Teams</button>
                             </a>
                         {% else %}
                             <a href="/team/parameters">
