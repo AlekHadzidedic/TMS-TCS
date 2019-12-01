@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS tms.instructor (
 
 CREATE TABLE IF NOT EXISTS tms.team (
   id                SERIAL PRIMARY KEY,
-  team_name              VARCHAR (50) NOT NULL UNIQUE,
+  team_name         VARCHAR (50) NOT NULL UNIQUE,
   max_team_size     INTEGER,
   min_team_size     INTEGER,
   team_size         INTEGER

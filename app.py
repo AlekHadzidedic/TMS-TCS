@@ -1,16 +1,20 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, g
+from flask import Flask, render_template, request, session, redirect, url_for, g, flash
+from db.DatabaseConnection import DatabaseConnection
+from db.config import config
+import os
 from models.user import User
 from models.team import Team
 
+
 # app = Flask(__name__)
 app = Flask(__name__, static_folder='./static')
-app.secret_key = 'random string'
+app.secret_key = os.urandom(24)
+
 
 user = User('test', 'er', 'ere@ere.com')
 user.user_type = 'Instructor'
 teams = []
 g.are_team_parameters_set = False
-
 
 @app.route('/')
 def index():
@@ -25,6 +29,36 @@ def sign_in():
 @app.route('/register')
 def register():
     return render_template("register.html")
+
+
+
+@app.route('/create-team', methods=['GET','POST'])
+def create_team():
+    if request.method == 'POST':
+      
+        try:
+            teamname = request.form['teamname']
+				
+			 
+            db = DatabaseConnection()
+
+            with db.get_connection() as con:
+
+                cursor = con.cursor()
+                cursor.execute("INSERT INTO tms.team(team_name) VALUES (%s)",(teamname,))
+
+                flash("Successfully created team")
+	  
+        except:
+            con.rollback()
+            #return f"{err.__class__.__name__}: {err}"
+            flash("Error in creating team")
+			
+        finally:
+            con.close()
+            return render_template("create-team.html")
+          
+    return render_template("create-team.html")
 
 
 @app.route('/user/options')
