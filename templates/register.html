@@ -2,6 +2,21 @@
 <html lang="en">
 
 <head>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type=text/javascript>
+  $(function(){
+
+    $("#studentId").click(function(){
+      $("#studentNumberDiv").show();
+    })
+    $("#instructorId").click(function(){
+      $("#studentNumberDiv").hide();
+    })
+
+  });
+  </script>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>TMS</title>
@@ -53,7 +68,7 @@
               {% endfor %}
             {% endif %}
           {% endwith %}
-          
+
           <h4 class="text-center">Register</h4>
         </div>
 
@@ -64,26 +79,26 @@
           <div class="login-body col-sm-6 text-center">
             <p class="login-msg">Register to get started</p>
             <div class="form-group">
-              <form method="POST" id="">
+              <form method="POST" id="registerForm">
                 <div class="form-group has-feedback">
                     <!----- First Name ------->
-                    <input class="form-control" placeholder="First Name" id="" type="text" name="firstname"/>
+                    <input class="form-control" placeholder="First Name" id="" type="text" name="first_name"/>
                 </div>
 
                 <div class="form-group has-feedback">
                   <!----- Last Name ------->
-                  <input class="form-control" placeholder="Last Name" id="" type="text" name="lastname"/>
+                  <input class="form-control" placeholder="Last Name" id="" type="text" name="last_name"/>
                 </div>
 
                 <div class="form-group has-feedback">
                   <!----- Email ------->
-                  <input class="form-control" placeholder="Email Address" id="" type="text" name="email"/>
+                  <input class="form-control" placeholder="Email Address" id="" type="email" name="email"/>
                 </div>
 
                 <div class="form-group has-feedback">
                     <!----- Confirm Email ------->
                     <input class="form-control" placeholder="Confirm Email Address" id="" type="email"/>
-                  </div>
+                </div>
   
                 <div class="form-group has-feedback">
                   <!----- Password ------->
@@ -93,7 +108,17 @@
                 <div class="form-group has-feedback">
                     <!----- Confirm password ------->
                     <input class="form-control" placeholder="Confirm Password" id="" type="password"/>
-                  </div>
+                </div>
+
+                <p>I am a:&nbsp;&nbsp;
+                  <label class="radio-inline"><input type="radio" name="user_type" value="student" id="studentId" checked>Student</label>
+                  <label class="radio-inline"><input type="radio" name="user_type" value="instructor" id="instructorId">Instructor</label>
+                </p>
+
+                <div class="form-group has-feedback" id="studentNumberDiv">
+                    <!----- Student Number If Student ------->
+                    <input class="form-control" placeholder="Student Number" type="text" name="student_number"/>
+                </div>
 
                 <div class="row">
                   <div class="col-xs-12">
