@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, g
 from models.user import User
 from models.team import Team
 
@@ -9,7 +9,7 @@ app.secret_key = 'random string'
 user = User('test', 'er', 'ere@ere.com')
 user.user_type = 'Instructor'
 teams = []
-are_team_parameters_set = False
+g.are_team_parameters_set = False
 
 
 @app.route('/')
@@ -52,6 +52,7 @@ def team_parameters():
                 return render_template("set-team-parameters.html", error=error)
 
         flash('Parameters successfully set')
+        g.are_team_parameters_set = True
         return redirect(url_for("user_options"))
     else:
         if user.user_type == 'Instructor':
