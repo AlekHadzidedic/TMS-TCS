@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS tms.team (
   id                SERIAL PRIMARY KEY,
   team_name         VARCHAR (50) NOT NULL UNIQUE,
   max_team_size     INTEGER,
+  min_team_size     INTEGER,
   team_size         INTEGER
 );
 
@@ -23,7 +24,14 @@ CREATE TABLE IF NOT EXISTS tms.student (
   student_number    INTEGER NOT NULL UNIQUE,
   email             VARCHAR (50) NOT NULL UNIQUE,
   password          VARCHAR (255),
-  is_liason         boolean,
+  is_liason         BOOLEAN,
   team_name VARCHAR (50) REFERENCES tms.team (team_name) ON DELETE RESTRICT
+
 );
 
+CREATE TABLE IF NOT EXISTS tms.team_parameters (
+  id                    SERIAL PRIMARY KEY,
+  max_team_size         INTEGER,
+  min_team_size         INTEGER,
+  are_parameters_set    BOOLEAN
+);

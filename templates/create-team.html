@@ -43,7 +43,18 @@
   
       <div>
         <div>
-          <h4 class="text-center">Create Team</h4>
+          
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-success text-center" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <h4 class="text-center">Create Team</h4>
         </div>
 
       <div>
@@ -53,14 +64,14 @@
           <div class="login-body col-sm-6 text-center">
             <p class="login-msg">Create a team for your project</p>
             <div class="form-group">
-              <form name="" id="">
+              <form method="POST" id="">
                 <div class="form-group has-feedback">
                   <!----- team name -------------->
-                  <input class="form-control" placeholder="Team Name" id="" type="text"/>
+                  <input class="form-control" placeholder="Team Name" id="" type="text" name="teamname"/>
                 </div>
                 <div class="row">
                   <div class="col-xs-12">
-                    <button type="button" class="btn btn-blue btn-block btn-flat">Create Team</button>
+                    <button type="submit" class="btn btn-blue btn-block btn-flat">Create Team</button>
                   </div>
                 </div>
               </form>
