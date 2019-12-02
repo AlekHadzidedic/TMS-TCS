@@ -43,41 +43,55 @@
     </nav>
     <!--/ Navigation bar-->
 
-<div style="margin-top:100px;">
+    <div style="margin-top:100px;">
 
-    <div>
-        <div>
-            <h4 class="text-center">Visualize Teams</h4>
-        </div>
+            <div>
+                <div>
+                    <h4 class="text-center">Join Teams Page</h4>
+                </div>
+        
+                <div>
+        
+                    <div class="col-sm-3"></div>
 
-        <div>
+                    <div class="login-body col-sm-6 text-center">
+                        <div class="form-group">
+                            <form method="POST" id="">
+                                <label for="join_team">Select Team</label>
+                                <select class="form-control has-feedback" id="join_team">
+                                    {% for team in teams %}
+                                                
+                                        <option name= "team_to_join" value="{{ team }}">{{ team }}</option>
+                                                        
+                                    {% endfor %}
+                                </select>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <button type="submit" class="btn btn-blue btn-block btn-flat">Join Team</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>        
+                    </div>
 
-            <div class="col-sm-3"></div>
-
-            <div class="login-body col-sm-6 text-center">
-                {% for team in teams %}
-                    <p>Team Number: {{ team.team_number }}</p>
-                    <p>Team Name: {{ team.name }}</p>
-                    <p>Team Size: {{ team.num_team_members }}</p>
-                    <br>
-                    <br>
-                {% endfor %}
+                    
+        
+                    <div class="col-sm-3"></div>
+        
+                </div>
             </div>
-
-            <div class="col-sm-3"></div>
-
+        
         </div>
-    </div>
 
-</div>
-<!--Footer-->
+    <!--Footer-->
 <footer id="footer" class="footer col-xs-12">
-    <div class="container text-center">
-        ©2019 StarTech. All rights reserved
-    </div>
-</footer>
-<!--/ Footer-->
-
-</body>
-
-</html>
+        <div class="container text-center">
+            ©2019 StarTech. All rights reserved
+        </div>
+    </footer>
+    <!--/ Footer-->
+    
+    </body>
+    
+    </html>

@@ -239,7 +239,27 @@ def dashboard():
 
     return redirect(url_for('sign_in'))
 
-@app.route('/create-team', methods=['GET', 'POST'])
+@app.route('/team/join', methods=['GET', 'POST'])
+def join_team():
+    teams_sql = []
+    team_names = []
+    db = DatabaseConnection()
+    if g.student_is_liaison == False:
+        with db.get_connection().cursor() as cursor:
+            cursor.execute("SELECT * FROM tms.team")
+            teams_sql = cursor.fetchall()
+
+            for team_sql in teams_sql:
+                print("teamSQL")
+                print(team_sql)
+                team_names.append(team_sql[1])
+
+        return render_template("join-team.html", teams=team_names)
+    #user is liaisa
+    return redirect(url_for("dashboard"))
+
+
+@app.route('/team/create', methods=['GET', 'POST'])
 def create_team():
     if request.method == 'POST':
 
@@ -333,4 +353,5 @@ def team_parameters():
 
 
 if __name__ == '__main__':
+    
     app.run(debug=True)
