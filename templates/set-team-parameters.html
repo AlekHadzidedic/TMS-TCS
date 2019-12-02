@@ -25,8 +25,8 @@
         <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
         {% if g.user_type == "student" %}
-            <li><a href="/create-team">Create Team</a></li>
-            <li><a href="/create-team">Join Team</a></li>
+            <li><a href="/team/create">Create Team</a></li>
+            <li><a href="/team/join">Join Team</a></li>
             <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
         {% elif g.user_type == "instructor" %}
             <li><a href="/team/parameters">Set Team Parameters</a></li>
@@ -88,7 +88,7 @@
 <!--Footer-->
 <footer id="footer" class="footer col-xs-12">
     <div class="container text-center">
-        ©2016 StarTech. All rights reserved
+        ©2019 StarTech. All rights reserved
     </div>
 </footer>
 <!--/ Footer-->
