@@ -11,8 +11,8 @@
 </head>
 
 <body>
-  <!--Navigation bar-->
-  <nav class="navbar navbar-default navbar-fixed-top">
+<!--Navigation bar-->
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -25,6 +25,9 @@
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
         {% if g.user_type == "student" %}
+          {% if g.student_is_liaison == True %}
+            <li><a href="/team/requests">Team Requests</a></li>
+          {% endif  %}
           <li><a href="/team/create">Create Team</a></li>
           <li><a href="/team/join">Join Team</a></li>
           <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
@@ -56,7 +59,6 @@
               {% endfor %}
             {% endif %}
           {% endwith %}
-          <h4 class="text-center">Dashboard</h4>
         </div>
 
       <div>
@@ -64,11 +66,22 @@
           <div class="col-sm-3"></div>
 
           <div class="login-body col-sm-6 text-center">
-            <p class="login-msg">Welcome {{g.user_first_name}}</p>
-
-              <div class="row">
-                <div class="col-xs-12">
-                  <button type="button" class="btn btn-blue btn-block btn-flat">Visualize Student Teams</button>
+              <div class="panel panel-primary">
+                <div class="panel-heading">Dashboard</div>
+                <div class="panel-body">
+                  <h4 class="text-uppercase text-primary">{{ g.user_first_name }} &nbsp {{ g.user_last_name }}</h4>
+                  <h6 class="text-uppercase text-danger">{{ g.user_type }}</h6>
+                  <h5>{{ g.user }}</h5>
+                  {% if g.user_type == "student" %}
+                    <h5 class="text-uppercase">Student ID: {{ g.student_number }}</h5>
+                  {% endif %}
+                  {% if g.student_is_liaison == True %}
+                    <h5 class="text-uppercase">TEAM LIAISON FOR: {{ g.student_team_name }}</h5>
+                  {% elif ((g.student_is_liaison == False) and (g.user_type == "student") and (g.student_team_name != None)) %}
+                    <h5 class="text-uppercase">Team: {{ g.student_team_name }}</h5>
+                  {% elif ((g.student_is_liaison == False) and (g.user_type == "student") and (g.student_team_name == None)) %}
+                      <h5 class="text-info">You are currently not a part of any team</h5>
+                  {% endif %}
                 </div>
               </div>
               

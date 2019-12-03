@@ -11,8 +11,8 @@
 </head>
 
 <body>
-  <!--Navigation bar-->
-  <nav class="navbar navbar-default navbar-fixed-top">
+<!--Navigation bar-->
+<nav class="navbar navbar-default navbar-fixed-top">
     <div class="container">
       <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -25,6 +25,9 @@
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
         {% if g.user_type == "student" %}
+          {% if g.student_is_liaison == True %}
+            <li><a href="/team/requests">Team Requests</a></li>
+          {% endif  %}
           <li><a href="/team/create">Create Team</a></li>
           <li><a href="/team/join">Join Team</a></li>
           <li class="btn-emph"><a href="/sign-out">Sign Out</a></li>
@@ -71,7 +74,7 @@
               <form method="POST" id="">
                 <div class="form-group has-feedback">
                   <!----- team name -------------->
-                  <input class="form-control" placeholder="Team Name" id="" type="text" name="teamname"/>
+                  <input class="form-control" placeholder="Team Name" id="" type="text" name="team_name"/>
                 </div>
                 <div class="row">
                   <div class="col-xs-12">

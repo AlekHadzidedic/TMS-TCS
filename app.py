@@ -74,17 +74,17 @@ def sign_in():
 
                 if (check_password_hash(dbHashedPass, password)): # compare hash pass here instead
 
-                    ### NEED TO CHECK IF STUDENT OR INSTRUCTOR, and assign that to session variable  *******
+                    
                     session['user'] = request.form['email']
                     session['userType'] = userType
                     
-                    if (userType == "student"):
+                    if (userType == "student"): # Student
                         session['firstName'] = dbEmailResultStudent[1]
                         session['lastName'] = dbEmailResultStudent[2]
                         session['studentNumber'] = dbEmailResultStudent[3]
                         session['isLiaison'] = dbEmailResultStudent[6]
                         session["teamName"] = dbEmailResultStudent[7]
-                    else:
+                    else: # Instructor
                         session['firstName'] = dbEmailResultInstructor[1]
                         session['lastName'] = dbEmailResultInstructor[2]
 
@@ -95,14 +95,13 @@ def sign_in():
                     flash("Invalid Password")
                     return redirect(url_for("sign_in"))
 
-        except Exception as err:
+        except:
             con.rollback()
-            return f"{err.__class__.__name__}: {err}"
-            # flash("Error in registering user")
+            #return f"{err.__class__.__name__}: {err}"
+            flash("Error in registering user")
         
         finally:
             con.close()
-            #return render_template("register.html")
         
     if g.user: # if already signed in, then redirect user to dashboard
         return redirect(url_for('dashboard'))
@@ -215,14 +214,13 @@ def register():
                     else:
                         flash("User with that email already exists.")
                 
-        except Exception as err:
+        except:
             con.rollback()
-            return f"{err.__class__.__name__}: {err}"
-            # flash("Error in registering user")
+            #return f"{err.__class__.__name__}: {err}"
+            flash("Error in registering user")
         
         finally:
             con.close()
-            #return render_template("register.html")
 
     if g.user: # if logged in, redirect to dashboard
         return redirect(url_for("dashboard"))
@@ -232,48 +230,119 @@ def register():
 
 @app.route('/dashboard')
 def dashboard():
-    if g.user: ###### NEED TO CHECK USER TYPE --> REDIRECT TO STUDENT ONE FOR STUDENT, INSTR FOR INSTR ****** 
-    
-        # SO FAR JUST INSTRUCTOR REDIRECT
+
+    if g.user: 
+
         return render_template("dashboardi.html")
 
     return redirect(url_for('sign_in'))
 
 @app.route('/team/join', methods=['GET', 'POST'])
 def join_team():
-    teams_sql = []
-    team_names = []
-    db = DatabaseConnection()
-    if g.student_is_liaison == False:
-        with db.get_connection().cursor() as cursor:
-            cursor.execute("SELECT * FROM tms.team")
-            teams_sql = cursor.fetchall()
 
-            for team_sql in teams_sql:
-                print("teamSQL")
-                print(team_sql)
-                team_names.append(team_sql[1])
-
-        return render_template("join-team.html", teams=team_names)
-    #user is liaisa
-    return redirect(url_for("dashboard"))
-
-
-@app.route('/team/create', methods=['GET', 'POST'])
-def create_team():
     if request.method == 'POST':
 
         try:
-            teamname = request.form['teamname']
 
             db = DatabaseConnection()
 
             with db.get_connection() as con:
 
                 cursor = con.cursor()
-                cursor.execute("INSERT INTO tms.team(team_name) VALUES (%s)", (teamname,))
 
-                flash("Successfully created team")
+                cursor.execute("SELECT * FROM tms.team") # Check if teams exist
+                teams_sql = cursor.fetchone()
+
+                if (teams_sql != None):
+
+                    teamToJoin = request.form['team_to_join']
+                    cursor.execute("SELECT * FROM tms.team_request WHERE team_name=(%s) AND student_email=(%s)",(teamToJoin, g.user))
+                    joinRequestResult = cursor.fetchone()
+
+                    if (joinRequestResult == None):
+
+                        studentFullName = g.user_first_name + " " + g.user_last_name
+                        cursor.execute("INSERT INTO tms.team_request (team_name, student_email, request_status, student_name) VALUES (%s, %s, %s, %s)", (teamToJoin, g.user, "pending", studentFullName))
+                        flash("Successfully sent request to join team: " + teamToJoin)
+
+                    else:
+
+                        flash("Already sent a request to join team: " + teamToJoin)
+                else:
+                    flash("No teams currently exist")
+
+
+        except Exception as err:
+            con.rollback()
+            return f"{err.__class__.__name__}: {err}"
+            #flash("Error in sending request to join team")
+
+        finally:
+            con.close()
+
+    # GET Request
+
+    # If it's a student that's not in a team
+    if ((g.user_type == "student") and (g.student_team_name == None)):
+
+        teams_sql = []
+        team_names = []
+        db = DatabaseConnection()
+
+        with db.get_connection().cursor() as cursor:
+            cursor.execute("SELECT * FROM tms.team")
+            teams_sql = cursor.fetchall()
+
+            for team_sql in teams_sql:
+                team_names.append(team_sql[1])
+
+            print("Teams: " + str(teams_sql))
+
+        return render_template("join-team.html", teams=team_names)
+
+    elif ((g.user_type == "student") and (g.student_team_name != None)):
+        flash("You are already part of a team!")
+        return redirect(url_for("dashboard")) # student is already in team, redirect
+
+    else:
+        return redirect(url_for("dashboard")) # user is not signed in or is instructor
+
+
+@app.route('/team/create', methods=['GET', 'POST'])
+def create_team():
+    if request.method == 'POST':
+        try:
+            teamName = request.form['team_name']
+
+            db = DatabaseConnection()
+
+            with db.get_connection() as con:
+
+                cursor = con.cursor()
+
+                cursor.execute("SELECT * FROM tms.team_parameters")
+                team_parameters = cursor.fetchone()
+                areTeamParametersSet = team_parameters[3]
+                print("ARE PARAMETERS SET: " + str(areTeamParametersSet))
+                
+                if (areTeamParametersSet):
+
+                    # Create the team in DB and initialize team_size as 1
+                    cursor.execute("INSERT INTO tms.team(team_name, team_size) VALUES (%s, %s)", (teamName, 1))
+
+                    # Update the values of student's is_liaison and team name
+                    cursor.execute("UPDATE tms.student SET is_liason=(%s), team_name=(%s) WHERE email=(%s)", (True, teamName, g.user))
+
+                    # Update request status to accepted
+                    cursor.execute("UPDATE tms.team_request SET request_status=(%s) WHERE student_email=(%s)", ("accepted", g.user))
+
+                    session['isLiaison'] = True # Set the session variables so that changes take effect this session
+                    session["teamName"] = teamName
+
+                    flash("Successfully created team")
+                
+                else:
+                    flash("Instructor has not yet set the team parameters")
 
         except:
             con.rollback()
@@ -282,15 +351,100 @@ def create_team():
 
         finally:
             con.close()
-            return render_template("create-team.html")
+            return redirect(url_for("dashboard"))
 
-    return render_template("create-team.html")
+    # GET Request
 
-@app.route('/user/options')
-def user_options():
-    if g.user_type == "instructor":
-        return render_template("user-options.html", user=user)
-    return redirect(url_for("dashboard"))
+    if ((g.user_type == "student") and (g.student_team_name == None)):
+        return render_template("create-team.html") # Student with no team
+
+    elif ((g.user_type == "student") and (g.student_team_name != None)):
+        flash("You are already part of a team!")
+        return redirect(url_for("dashboard")) # Student already in team, redirect
+
+    else:
+        return redirect(url_for("dashboard")) # user is instructor or not logged in
+
+@app.route('/team/requests', methods=['GET', 'POST'])
+def team_requests():
+
+    if request.method == 'POST':
+
+        try:
+            studentRequestEmail = request.form['student_request_email'] # Get the email of the student trying to join the team
+            studentRequestName = request.form['student_request_name'] # Get the email of the student trying to join the team
+
+            db = DatabaseConnection()
+
+            with db.get_connection() as con:
+
+                cursor = con.cursor()
+
+                cursor.execute("SELECT * FROM tms.team_parameters")
+                team_parameters = cursor.fetchone()
+                maxTeamSize = team_parameters[1] # Get Max team size
+
+                cursor.execute("SELECT * FROM tms.team where team_name=(%s)", (g.student_team_name,))
+                current_team = cursor.fetchone()
+                currentTeamSize = current_team[4] # Get current size of the team
+
+                if (currentTeamSize < maxTeamSize): # If team capacity has not been reached
+
+                    incrementTeamSize = currentTeamSize + 1
+                    # Update student's team name
+                    cursor.execute("UPDATE tms.student SET team_name=(%s) WHERE email=(%s)", (g.student_team_name, studentRequestEmail))
+
+                    # Increment team size
+                    cursor.execute("UPDATE tms.team SET team_size=(%s) WHERE team_name=(%s)", (incrementTeamSize, g.student_team_name))
+
+                    print("GOT HERE")
+                    # Update request status to accepted
+                    cursor.execute("UPDATE tms.team_request SET request_status=(%s) WHERE student_email=(%s)", ("accepted", studentRequestEmail))
+
+                    flash("Added " + studentRequestName + " to the team!")
+
+                else:
+                    flash("Team Capacity of " + str(maxTeamSize) + " has already been reached!")
+
+        except:
+            con.rollback()
+            #return f"{err.__class__.__name__}: {err}"
+            flash("Error in accepting team member")
+
+        finally:
+            con.close()
+            return redirect(url_for("team_requests"))
+
+    # GET Request
+
+    # If it's a student that is a liaison
+    if ((g.user_type == "student") and (g.student_is_liaison == True)):
+
+        student_requests_sql = []
+        array_student_request_data = []
+
+        db = DatabaseConnection()
+
+        with db.get_connection().cursor() as cursor:
+            
+            cursor.execute("SELECT * FROM tms.team_request WHERE team_name=(%s) AND request_status=(%s)",(g.student_team_name, "pending"))
+            student_requests_sql = cursor.fetchall()
+
+            for student_request in student_requests_sql:
+                student_request_data = []
+                student_request_data.append(student_request[2]) # Append email of student
+                student_request_data.append(student_request[4]) # Append full name of student
+                array_student_request_data.append(student_request_data) # Append that list to the larger list
+
+            print("Student Requests: " + str(student_requests_sql))
+            print("-----------------")
+            print("Student Request Emails: " + str(array_student_request_data))
+
+        return render_template("accept-students.html", studentRequests=array_student_request_data)
+
+    else:
+        return redirect(url_for("dashboard")) # user is not signed in or is instructor
+
 
 
 @app.route('/team/visualize')
@@ -344,7 +498,9 @@ def team_parameters():
 
         flash('Parameters successfully set')
         g.are_team_parameters_set = True
-        return redirect(url_for("user_options"))
+        return redirect(url_for("dashboard"))
+
+    # GET Request 
     else:
         if g.user_type == 'instructor':
             return render_template("set-team-parameters.html")
