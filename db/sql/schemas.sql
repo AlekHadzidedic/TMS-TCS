@@ -35,3 +35,11 @@ CREATE TABLE IF NOT EXISTS tms.team_parameters (
   min_team_size         INTEGER,
   are_parameters_set    BOOLEAN
 );
+
+CREATE TABLE IF NOT EXISTS tms.team_request (
+  id                    SERIAL PRIMARY KEY,
+  team_name VARCHAR (50) REFERENCES tms.team (team_name) ON DELETE RESTRICT,
+  student_email VARCHAR (50) REFERENCES tms.student (email) ON DELETE RESTRICT,
+  request_status VARCHAR (50),
+  student_name VARCHAR (100)
+);

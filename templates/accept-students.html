@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>TMS</title>
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='bootstrap.min.css') }}"/>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='style.css') }}"/>
-</head>
+  </head>
 
-<body>
-<!--Navigation bar-->
-<nav class="navbar navbar-default navbar-fixed-top">
+  <body>
+    
+    <!--Navigation bar-->
+    <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -46,56 +47,48 @@
       </nav>
       <!--/ Navigation bar-->
 
-<div style="margin-top:100px;">
-
-    <div>
+      <div style="margin-top:100px;">
         <div>
-            <h4 class="text-center">Setup for Team Parameters</h4>
-        </div>
-
-        <div>
-
+          <div>
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-success text-center" role="alert">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <h4 class="text-center">Team Requests</h4>
+          </div>
+          <div>
             <div class="col-sm-3"></div>
-
             <div class="login-body col-sm-6 text-center">
-                <p class="login-msg">Set up team parameters to allow team creation</p>
+              <p>The following students wish to join your team</p>
+              {% for studentData in studentRequests %}
                 <div class="form-group">
-                    <form action="http://localhost:5000/team/parameters" method="POST">
-                        <div class="form-group has-feedback">
-                            <!----- min team size -------------->
-                            Minimum team size: <input class="form-control" name="min_size" id="" type="number" min="1"/>
-                        </div>
-                        <div class="form-group has-feedback">
-                            <!----- max team size -------------->
-                            Maximum team size: <input class="form-control" name="max_size" id="" type="number" min="1"/>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <button type="submit" class="btn btn-blue btn-block btn-flat">Set Parameters</button>
-                            </div>
-                            <br>
-                            {% if error %}
-                                <p class=error><strong>Error:</strong> {{ error }}
-                            {% endif %}
-                        </div>
-                    </form>
+                  <form method="POST">          
+                    <div>
+                      <hr class="bottom-line">
+                      <h5>{{ studentData[1] }} requested to join {{ g.student_team_name }}</h5>
+                      <input type="hidden" value="{{ studentData[0] }}" name="student_request_email">
+                      <input type="hidden" value="{{ studentData[1] }}" name="student_request_name">
+                      <button type="submit" class="btn btn-blue btn-flat" style="width:50%;">Accept Request</button>
+                    </div>     
+                  </form>
                 </div>
+              {% endfor %}        
             </div>
-
-            <div class="col-sm-3"></div>
-
+            <div class="col-sm-3"></div> 
+          </div>
         </div>
-    </div>
-
-</div>
-<!--Footer-->
-<footer id="footer" class="footer col-xs-12">
-    <div class="container text-center">
-        ©2019 StarTech. All rights reserved
-    </div>
-</footer>
-<!--/ Footer-->
-
-</body>
-
-</html>
+      </div>
+      <!--Footer-->
+      <footer id="footer" class="footer col-xs-12">
+        <div class="container text-center">
+            ©2019 StarTech. All rights reserved
+        </div>
+      </footer>
+      <!--/ Footer-->
+    </body>
+  </html>
