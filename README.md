@@ -12,4 +12,6 @@
     - Create a database called tms and grant seg_user all privileges
 
 3. Run setup.py
+
+4. Run app.py
     
